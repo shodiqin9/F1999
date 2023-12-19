@@ -1,0 +1,99 @@
+package com.shod.rv1;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.text.DecimalFormat;
+
+public class proceedpage extends AppCompatActivity {
+    private TextInputEditText etCP, etDP, etRM, etIR;
+    private TextView tvTotalLoan, tvTotalLoanAmount, tvMonthlyInstalment;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_proceedpage);
+
+        etCP = findViewById(R.id.etCP);
+        etDP = findViewById(R.id.etDP);
+        etRM = findViewById(R.id.etRM);
+        etIR = findViewById(R.id.etIR);
+
+        tvTotalLoan = findViewById(R.id.tvTotalLoan);
+        tvTotalLoanAmount = findViewById(R.id.tvTotalLoanAmount);
+        tvMonthlyInstalment = findViewById(R.id.tvMonthlyInstalment);
+
+        Button btnCalculate = findViewById(R.id.btncalc);
+        Button btnReset = findViewById(R.id.btnreset);
+
+        btnCalculate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calculate();
+            }
+        });
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reset();
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_proceed, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_exit) {
+            ExitConfirmationDialog.showExitDialog(proceedpage.this);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+    public void calculate() {
+            double carPrice = Double.parseDouble(etCP.getText().toString());
+            double downPayment = Double.parseDouble(etDP.getText().toString());
+            double repaymentMonth = Double.parseDouble(etRM.getText().toString());
+            double interestRate = Double.parseDouble(etIR.getText().toString());
+
+            double totalLoan = carPrice - downPayment;
+            double totalLoanAmount = totalLoan * interestRate;
+            double monthlyInstalment = totalLoanAmount / repaymentMonth;
+
+            DecimalFormat df = new DecimalFormat("0.00");
+
+
+            tvTotalLoan.setText("Your car price after down payment: RM" + df.format(totalLoan));
+            tvTotalLoanAmount.setText("Your total loan including interest: RM" + df.format(totalLoanAmount));
+            tvMonthlyInstalment.setText("Your monthly instalment are: RM" + df.format(monthlyInstalment));
+    }
+
+    public void reset() {
+        etCP.getText().clear();
+        etDP.getText().clear();
+        etRM.getText().clear();
+        etIR.getText().clear();
+
+        tvTotalLoan.setText("");
+        tvTotalLoanAmount.setText("");
+        tvMonthlyInstalment.setText("");
+    }
+}
